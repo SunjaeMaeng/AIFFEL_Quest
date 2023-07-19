@@ -1,90 +1,59 @@
 # AIFFEL Campus Online 5th Code Peer Review Templete
-- 코더 : 코더 1인의 이름을 작성하세요.
-- 리뷰어 : 본인의 이름을 작성하세요.
 - 코더 : 맹선재 (김석영, 조준규, 최예나)
-- 리뷰어 : 
+- 리뷰어 : 박혜원
 
 
 # PRT(PeerReviewTemplate) 
 각 항목을 스스로 확인하고 토의하여 작성한 코드에 적용합니다.
 
-- [ ] 코드가 정상적으로 동작하고 주어진 문제를 해결했나요?
-  > 
-- [ ] 주석을 보고 작성자의 코드가 이해되었나요?
-  > 
-- [ ] 코드가 에러를 유발할 가능성이 없나요?
-  >
-- [ ] 코드 작성자가 코드를 제대로 이해하고 작성했나요?
-  > 
-- [ ] 코드가 간결한가요?
-  > 
-- [ ] 주석을 보고 작성자의 코드가 이해되었나요?
-  > 
+- [O] 코드가 정상적으로 동작하고 주어진 문제를 해결했나요?
+  > 네 동작에 이상이 없었고, Rubric 에 명시된 사항들을 전부 아주 잘 수행하셨습니다. 
+- [O] 주석을 보고 작성자의 코드가 이해되었나요?
+  > 네. 목차 및 각 기능 구현에 따라 코드 블럭들을 나누어 주셔서 확인하기 편했습니다.  
+- [O] 코드가 에러를 유발할 가능성이 없나요?
+  > 네 없습니다. 
+- [O] 코드 작성자가 코드를 제대로 이해하고 작성했나요?
+  > 네. 모델 구현 과정에서 구체적인 설명과 주석이 달려있으므로 제대로 이해하고 작성하였다고 생각됩니다. 
+- [O] 코드가 간결한가요?
+  > 네. 각각의 기능에 대해서만 잘 구현해주셨습니다. 
+- [O] 주석을 보고 작성자의 코드가 이해되었나요?
 
-# 예시
-1. 코드의 작동 방식을 주석으로 기록합니다.
-2. 코드의 작동 방식에 대한 개선 방법을 주석으로 기록합니다.
-3. 참고한 링크 및 ChatGPT 프롬프트 명령어가 있다면 주석으로 남겨주세요.
-- [ ] 주석을 보고 작성자의 코드가 이해되었나요?
-- [ ] 코드가 에러를 유발할 가능성이 없나요?
-  > 
-
-- [ ] 코드가 에러를 유발할 가능성이 없나요?
-
-- [ ] 코드 작성자가 코드를 제대로 이해하고 작성했나요?
-
-- [ ] 코드가 간결한가요?
-- [ ] 코드 작성자가 코드를 제대로 이해하고 작성했나요?
-  > 
-
-- [ ] 코드가 간결한가요?
-  > 
-
-
-```python
-# 사칙 연산 계산기
-class calculator:
-    # 예) init의 역할과 각 매서드의 의미를 서술
-    def __init__(self, first, second):
-        self.first = first
-        self.second = second
-
-    # 예) 덧셈과 연산 작동 방식에 대한 서술
-    def add(self):
-        result = self.first + self.second
-        return result
-
-a = float(input('첫번째 값을 입력하세요.')) 
-b = float(input('두번째 값을 입력하세요.')) 
-c = calculator(a, b)
-print('덧셈', c.add()) 
-#(5) 모델 준비하기
-# #입력 데이터 개수에 맞는 가중치 W와 b를 준비해주세요.
-# Feature의 갯수가 10개 (w = 10, b = 1)
-print(train_x.shape) 
-w = np.random.rand(10)
-b = np.random.rand(1)
-
-print(w.shape, b.shape)
-
-#모델 함수를 구현해주세요.
-def model(x, w, b):
-    predictions = 0
-    for i in range(10):
-        predictions += x[:, i] * w[i]
-    predictions += b
-    return predictions
-```
-
-
-
-# 참고 링크 및 코드 개선
-```
-# 코드 리뷰 시 참고한 링크가 있다면 링크와 간략한 설명을 첨부합니다.
-# 코드 리뷰를 통해 개선한 코드가 있다면 코드와 간략한 설명을 첨부합니다.
-```
-
+# 제안 
+class Discriminator 부분 아래와 같이 수정 
+: class Discriminator 부분을 좀더 간결하게 작성하기 위해서 아래와 같이 for 문을 사용하여 구현하는 방식을 제안드립니다. 
+코드 간략화 작업을 시행한 부분 (class Discriminator(Model))
 ```python
 
+class Discriminator(Model):
+    def __init__(self):
+        super(Discriminator, self).__init__()
+
+        filters = [64,128,256,512,1]
+        self.blocks = []
+        for i, f in enumerate(filters):
+            if i < 3:
+                if i == 0:
+                    self.blocks.append(DiscBlock(f, stride=2, custom_pad=False, use_bn=False, act=True))
+                else:
+                    self.blocks.append(DiscBlock(f, stride=2, custom_pad=False, use_bn=True,act=True))
+            elif i == 3:
+                  self.blocks.append(DiscBlock(f, stride=1, custom_pad=True, use_bn=True, act=True))
+            else:
+                  self.blocks.append(DiscBlock(f, stride=1, custom_pad=True, use_bn=False,act=False))
+        self.sigmoid = layers.Activation("sigmoid")
+
+
+    def call(self, x, y):
+        out = tf.concat([x, y], axis=-1)  # 입력 데이터를 합칩니다.
+        for block in self.blocks:
+            out = block(out)
+        return self.sigmoid(out)
+
+
+    def get_summary(self, x_shape=(256,256,3), y_shape=(256,256,3)):
+        x, y = Input(x_shape), Input(y_shape)
+        return Model((x, y), self.call(x, y)).summary()
+
 ```
+
 
