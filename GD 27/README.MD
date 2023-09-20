@@ -2,6 +2,7 @@
 - 코더 : 맹선재
 - 리뷰어 : 
 
+https://github.com/steelbear/AIFFEL-Quest/tree/master/going_deeper_nlp/27 참고
 
 # PRT(Peer Review Template)
 - []  **1. 주어진 문제를 해결하는 완성된 코드가 제출되었나요?**
